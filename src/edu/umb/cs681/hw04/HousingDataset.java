@@ -127,15 +127,8 @@ public class HousingDataset {
         System.out.println("Highest: " + dPO.getHighest());
         System.out.println("Lowest: " + dPO.getLowest());
         System.out.println("Average: " + dPO.getAverage());
-        // Processing Two
-        /*
-         * 
-         * – Identify the areas/blocks within the top (lowest) 10% of “low” crime rate and the top
-         * (lowest) 10% of pupil-teacher ratio. – Compute the max, min and average of: • Price • NOX
-         * concentration • # of rooms
-         */
 
-        // Processing two
+        // Processing Two
         List<HousingDataset> TopTen = Utils.getTopTenPercentCrimPtratio(hDList);
         // MAX, MIN, AVG PRICE
         Statistics dPO1 = new Statistics(
