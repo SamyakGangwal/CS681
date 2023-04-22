@@ -1,36 +1,106 @@
 package edu.umb.cs681.hw06.primes;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class RunnableCancellablePrimeFactorizerTest {
 	@Test
-	public void cancelFactorizing() {
+	public void factorizing() throws InterruptedException {
+		// private static List<Long> arrayToList(Integer... values) {
+		// List<Long> result = new ArrayList<Long>();
+		// for (int value : values) {
+		// result.add(Long.valueOf(value));
+		// }
+		// return result;
+		// }
 		RunnableCancellablePrimeFactorizer runnable =
-				new RunnableCancellablePrimeFactorizer(36, 2, (long) Math.sqrt(36));
+				new RunnableCancellablePrimeFactorizer(1024, 2, (long) Math.sqrt(36));
 		Thread thread = new Thread(runnable);
 
-		LinkedList<RunnableCancellablePrimeFactorizer> runnables =
-				new LinkedList<RunnableCancellablePrimeFactorizer>();
-		LinkedList<Thread> threads = new LinkedList<Thread>();
-		System.out.println("Factorization of 2489");
-		runnables.add(new RunnableCancellablePrimeFactorizer(2489, 2, (long) Math.sqrt(2489) / 2));
-		runnables.add(new RunnableCancellablePrimeFactorizer(2489, 1 + (long) Math.sqrt(2489) / 2,
-				(long) Math.sqrt(2489)));
+		thread.start();
+		thread.join();
 
-		thread = new Thread(runnables.get(0));
+		LinkedList<Long> expected =
+				new LinkedList<>(Arrays.asList(2l, 2l, 2l, 2l, 2l, 2l, 2l, 2l, 2l, 2l));
+
+		assertEquals(expected, runnable.getPrimeFactors());
+
+	}
+
+	@Test
+	public void cancelFactorizing() throws InterruptedException {
+		// private static List<Long> arrayToList(Integer... values) {
+		// List<Long> result = new ArrayList<Long>();
+		// for (int value : values) {
+		// result.add(Long.valueOf(value));
+		// }
+		// return result;
+		// }
+		RunnableCancellablePrimeFactorizer runnable =
+				new RunnableCancellablePrimeFactorizer(1024, 2, (long) Math.sqrt(36));
+		Thread thread = new Thread(runnable);
+
+		thread.start();
+		runnable.setDone();
+		thread.join();
+
+		LinkedList<Long> expected = new LinkedList<>();
+
+		assertEquals(expected, runnable.getPrimeFactors());
+
+	}
+
+	@Test
+	public void cancelFactorizingSleep() throws InterruptedException {
+		// private static List<Long> arrayToList(Integer... values) {
+		// List<Long> result = new ArrayList<Long>();
+		// for (int value : values) {
+		// result.add(Long.valueOf(value));
+		// }
+		// return result;
+		// }
+		RunnableCancellablePrimeFactorizer runnable =
+				new RunnableCancellablePrimeFactorizer(1024, 2, (long) Math.sqrt(36));
+		Thread thread = new Thread(runnable);
+
+		thread.start();
+		Thread.sleep(100);
+		runnable.setDone();
+		thread.join();
+
+		LinkedList<Long> expected =
+				new LinkedList<>(Arrays.asList(2l, 2l, 2l, 2l, 2l, 2l, 2l, 2l, 2l, 2l));
+
+		assertEquals(expected, runnable.getPrimeFactors());
+
+	}
+
+	@Test
+	public void cancelFactorizingList() throws InterruptedException {
+		// private static List<Long> arrayToList(Integer... values) {
+		// List<Long> result = new ArrayList<Long>();
+		// for (int value : values) {
+		// result.add(Long.valueOf(value));
+		// }
+		// return result;
+		// }
+		List<RunnableCancellablePrimeFactorizer> runnables = new ArrayList<>();
+
+		runnables.add(new RunnableCancellablePrimeFactorizer(5678, 2, (long) Math.sqrt(100)));
+		runnables.add(new RunnableCancellablePrimeFactorizer(6996, 2, (long) Math.sqrt(100)));
+
+		LinkedList<Thread> threads = new LinkedList<Thread>();
+
+		Thread thread = new Thread(runnables.get(0));
 		threads.add(thread);
-		System.out
-				.println("Thread #" + thread.threadId() + " performs factorization in the range of "
-						+ runnables.get(0).getFrom() + "->" + runnables.get(0).getTo());
 
 		thread = new Thread(runnables.get(1));
 		threads.add(thread);
-		System.out
-				.println("Thread #" + thread.threadId() + " performs factorization in the range of "
-						+ runnables.get(1).getFrom() + "->" + runnables.get(1).getTo());
 
 		threads.forEach((t) -> t.start());
 		runnables.forEach((r) -> r.setDone());
@@ -42,11 +112,11 @@ public class RunnableCancellablePrimeFactorizerTest {
 			}
 		});
 
-		LinkedList<Long> factors2 = new LinkedList<Long>();
-		runnables.forEach((factorizer) -> factors2.addAll(factorizer.getPrimeFactors()));
-		ArrayList<Long> expected = new ArrayList<>();
-		expected.add(19l);
-		assertArrayEquals(expected.toArray(), factors2.toArray());
+		LinkedList<Long> expected = new LinkedList<>(Arrays.asList(2l));
+		LinkedList<Long> expected2 = new LinkedList<>(Arrays.asList(2l, 2l, 3l));
+		assertEquals(expected, runnables.get(0).getPrimeFactors());
+		assertEquals(expected2, runnables.get(1).getPrimeFactors());
+
 	}
 
 }
