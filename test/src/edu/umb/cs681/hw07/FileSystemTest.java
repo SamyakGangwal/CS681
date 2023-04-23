@@ -1,7 +1,5 @@
 package edu.umb.cs681.hw07;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,25 +15,23 @@ public class FileSystemTest {
 
 	@Test
 	public void verifygetRootDirs() throws InterruptedException {
+		FileSystem[] fsList = new FileSystem[10];
+		Thread[] threads = new Thread[10];
 
-		Runnable fs_runnable1 = () -> assertSame(FileSystem.getFileSystem(), fs.getFileSystem());;
-		Runnable fs_runnable2 = () -> assertSame(FileSystem.getFileSystem(), fs.getFileSystem());;
-		Runnable fs_runnable3 = () -> assertSame(FileSystem.getFileSystem(), fs.getFileSystem());;
+		for (int i = 0;i < 10;i ++) {
+			final int index = i;
+			threads[index] = new Thread(
+				() -> {
+					fsList[index] = FileSystem.getFileSystem();
+				}
+			);
+			threads[i].start();
+		}
 
-		Thread thread = new Thread(fs_runnable1);
-
-		Thread thread1 = new Thread(fs_runnable2);
-
-		Thread thread2 = new Thread(fs_runnable3);
-
-		thread.start();
-		thread1.start();
-		thread2.start();
-
-		thread.join();
-		thread1.join();
-		thread2.join();
-
+		for (int i = 0;i < 10;i ++) {
+			threads[i].join();
+			assertSame(FileSystem.getFileSystem(), fsList[i].getFileSystem());
+		}
 	}
 
 	@AfterAll
