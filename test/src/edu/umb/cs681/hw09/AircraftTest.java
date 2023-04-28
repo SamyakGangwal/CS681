@@ -1,40 +1,34 @@
 package edu.umb.cs681.hw09;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 
 public class AircraftTest {
-	@Test
-	public void multiplePositions() {
-		Position p1 = new Position(45, 45, 45);
+    @Test
+    public void multiplePositions() {
+        Position p1 = new Position(45.0, 45.0, 45.0);
 
         Aircraft a1 = new Aircraft(p1);
 
         Thread t1 = new Thread(() -> {
-            System.out.println("Thread 1 Before: " + a1.getPosition());
-            a1.setPosition(60, 65, 70);
-            System.out.println("Thread 1 After: " + a1.getPosition());
+            Position p2 = a1.getPosition();
+            a1.setPosition(p2.latitude() + 1, p2.longitude(), p2.altitude());
         });
 
         Thread t2 = new Thread(() -> {
-            System.out.println("Thread 2 Before: " + a1.getPosition());
-            a1.setPosition(20, 15, 40);
-            System.out.println("Thread 2 After: " + a1.getPosition());
+            Position p2 = a1.getPosition();
+            a1.setPosition(p2.latitude(), p2.longitude() + 1, p2.altitude());
         });
 
         Thread t3 = new Thread(() -> {
-            System.out.println("Thread 3 Before: " + a1.getPosition());
-            a1.setPosition(55, 75, 12);
-            System.out.println("Thread 3 After: " + a1.getPosition());
+            Position p2 = a1.getPosition();
+            a1.setPosition(p2.latitude(), p2.longitude(), p2.altitude() + 1);
         });
 
         t1.start();
         t2.start();
         t3.start();
-
-        t1.interrupt();
-        t2.interrupt();
-        t3.interrupt();
 
         try {
             t1.join();
@@ -44,8 +38,8 @@ public class AircraftTest {
             e.printStackTrace();
         }
 
-        assertNotEquals(45,a1.getPosition().latitude());
-		assertNotEquals(45, a1.getPosition().longitude());
-		assertNotEquals(45, a1.getPosition().altitude());
-	}
+        assertEquals(46, a1.getPosition().latitude());
+        assertEquals(46, a1.getPosition().longitude());
+        assertEquals(46, a1.getPosition().altitude());
+    }
 }

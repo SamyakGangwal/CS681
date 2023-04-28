@@ -15,18 +15,20 @@ public record Position(double latitude, double longitude, double altitude) {
     }
 
     public boolean higherAltThan(Position anotherPosition) {
-        return anotherPosition.altitude > this.altitude ? false : true;
+        return anotherPosition.altitude > this.altitude;
     }
 
     public boolean lowerAltThan(Position anotherPosition) {
-        return anotherPosition.altitude > this.altitude ? true : false;
+        return anotherPosition.altitude < this.altitude;
     }
 
     public boolean northOf(Position anotherPosition) {
-        return anotherPosition.latitude > this.latitude ? false : true;
+        return anotherPosition.latitude < this.latitude;
     }
 
-    public boolean southOf(Position anothPosition) {
-        return anothPosition.latitude > this.latitude ? false : true;
+    public boolean southOf(Position anotherPosition) {
+        return anotherPosition.latitude > this.latitude;
     }
 }
+
+
