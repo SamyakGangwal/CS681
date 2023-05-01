@@ -13,16 +13,11 @@ public class RequestHandler implements Runnable {
     }
 
     public void setDone() {
-        this.done = new AtomicBoolean(false);
+        this.done = new AtomicBoolean(true);
     }
 
     @Override
     public void run() {
-        /*
-         * Have main() create 10+ instances of RequestHandler and use 10+ threads to execute
-         * RequestHandler’s run().
-         * 
-         */
         AccessCounter accessCounter = AccessCounter.getAc();
         int idx = RequestHandler.getRandomNumber();
 
@@ -30,6 +25,11 @@ public class RequestHandler implements Runnable {
         int count = 0;
 
         while (true) {
+            if (done.get()) {
+                System.out.println("Done!");
+                break;
+            }
+
             if (idx == 0) {
                 path = Paths.get("D:/umass_boston/cs_681/CS681/assets/a.html");
             } else {
@@ -44,11 +44,6 @@ public class RequestHandler implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println(e.toString());
                 continue;
-            }
-
-            if (done.compareAndSet(false, true)) {
-                System.out.println("Done!");
-                break;
             }
         }
 
@@ -65,18 +60,13 @@ public class RequestHandler implements Runnable {
             threads[i] = new Thread(runnables[i]);
             threads[i].start();
             runnables[i].setDone();
-
-        }
-
-        for (Thread t : threads) {
-            t.interrupt();
+            threads[i].interrupt();
             try {
-                t.join();
+                threads[i].join();
             } catch (InterruptedException e) {
                 System.out.println("THREAD INTERRUPTION DETECTED!");
             }
         }
-
         AccessCounter ac = AccessCounter.getAc();
 
         ac.getPathMap().entrySet().forEach(entry -> {

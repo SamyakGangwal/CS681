@@ -20,11 +20,11 @@ public class WithdrawRunnable implements Runnable {
     public void run() {
         try {
             for (int i = 0; i < 10; i++) {
-                account.withdraw(100);
-                Thread.sleep(Duration.ofSeconds(2));
-                if (done.compareAndSet(true, false)) {
+                if (done.get()) {
                     break;
                 }
+                account.withdraw(100);
+                Thread.sleep(Duration.ofSeconds(2));
             }
         } catch (InterruptedException exception) {
         }

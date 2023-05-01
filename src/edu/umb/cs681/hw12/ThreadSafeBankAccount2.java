@@ -59,31 +59,35 @@ public class ThreadSafeBankAccount2 implements BankAccount {
 
     public static void main(String[] args) {
         ThreadSafeBankAccount2 bankAccount = new ThreadSafeBankAccount2();
-        Thread t1 = new Thread();
-        Thread t2 = new Thread();
+        int totalThreads = 2;
+        Thread[] t1 = new Thread[totalThreads];
+        Thread[] t2 = new Thread[totalThreads];
 
-        DepositRunnable dr = new DepositRunnable(bankAccount);
-        WithdrawRunnable wr = new WithdrawRunnable(bankAccount);
+        DepositRunnable[] dr = new DepositRunnable[totalThreads];
+        WithdrawRunnable[] wr = new WithdrawRunnable[totalThreads];
 
-        for (int i = 0; i < 5; i++) {
-            t1 = new Thread(dr);
-            t2 = new Thread(wr);
-            t1.start();
-            t2.start();
+        for (int i = 0; i < totalThreads; i++) {
+            dr[i] = new DepositRunnable(bankAccount);
+            wr[i] = new WithdrawRunnable(bankAccount);
+            t1[i] = new Thread(dr[i]);
+            t2[i] = new Thread(wr[i]);
+            t1[i].start();
+            t2[i].start();
         }
 
-        dr.setDone();
-        wr.setDone();
+        for (int i = 0;i < totalThreads;i ++) {
+            dr[i].setDone();
+            wr[i].setDone();
 
-        t1.interrupt();
-        t2.interrupt();
-        try {
-            t1.join();
-            t2.join();
-        } catch (InterruptedException e) {
-            System.out.println("THREAD INTERRUPTION DETECTED!");
+            t1[i].interrupt();
+            t2[i].interrupt();
+            try {
+                t1[i].join();
+                t2[i].join();
+            } catch (InterruptedException e) {
+                System.out.println("THREAD INTERRUPTION DETECTED!");
+            }
         }
-
 
     }
 }

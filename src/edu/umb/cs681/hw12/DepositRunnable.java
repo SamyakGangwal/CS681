@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DepositRunnable implements Runnable {
     private BankAccount account;
-    AtomicBoolean done = new AtomicBoolean(false);
+    private AtomicBoolean done = new AtomicBoolean(false);
 
     public DepositRunnable(BankAccount account) {
         this.account = account;
@@ -18,12 +18,11 @@ public class DepositRunnable implements Runnable {
     public void run() {
         try {
             for (int i = 0; i < 10; i++) {
-                account.deposit(100);
-                Thread.sleep(Duration.ofSeconds(2));
-
-                if (done.compareAndSet(true, false)) {
+                if (done.get()) {
                     break;
                 }
+                account.deposit(100);
+                Thread.sleep(Duration.ofSeconds(2));
             }
         } catch (InterruptedException exception) {
         }
