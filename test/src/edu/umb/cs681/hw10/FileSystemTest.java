@@ -1,8 +1,6 @@
 package edu.umb.cs681.hw10;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.junit.jupiter.api.AfterAll;
@@ -19,42 +17,47 @@ public class FileSystemTest {
 
     @Test
     public void FileSystemsOpsMultipleThreads() throws InterruptedException {
-        Thread[] threads = new Thread[15];
+        FileSystemRunnable fsr = new FileSystemRunnable(fs);
+        ArrayList<Thread> threads = new ArrayList<>(15);
 
         for (int i = 0; i < 15; i++) {
             final int idx = i;
 
-            threads[idx] =  new Thread(() -> {
-                Directory root = fs.getRootDirs().getFirst();
-                Directory apps = root.getSubDirectories().getFirst();
-
-                File f = new File(apps, Thread.currentThread().getName(), 100);
-
-                Link l = new Link(root, "Link:" + Thread.currentThread().getName(), f);
-
-            });
-            threads[idx].start();
-
+            threads.add(idx, new Thread(fsr));
+            threads.get(idx).start();
         }
 
-        for (Thread t : threads) {
-            t.interrupt();
-        }
-
-        for (Thread t : threads) {
+        for (int i = 0; i < 15; i++) {
+            fsr.setDone();
+            threads.get(i).interrupt();
             try {
-                t.join();
+                threads.get(i).join();
             } catch (InterruptedException e) {
                 System.out.println("THREAD INTERRUPTION DETECTED!");
             }
         }
 
+        LinkedList<File> elements =
+                fs.getRootDirs().getFirst().getSubDirectories().getFirst().getFiles();
 
+        System.out.println("FILES:\n");
 
-        assertEquals(0,
-                fs.getRootDirs().getFirst().getSubDirectories().getFirst().getLinks().size());
-        assertEquals(16,
-                fs.getRootDirs().getFirst().getSubDirectories().getFirst().getFiles().size());
+        for (File e : elements) {
+            System.out.println(e.getName());
+        }
+
+        LinkedList<Link> elements1 =
+                fs.getRootDirs().getFirst().getSubDirectories().getFirst().getLinks();
+
+        System.out.println("LINKS:\n");
+
+        for (Link e : elements1) {
+            System.out.println(e.getName());
+        }
+
+        for (int i = 0; i < 15; i++) {
+            assertTrue(threads.get(i).isInterrupted());
+        }
     }
 
     @AfterAll

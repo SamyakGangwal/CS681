@@ -14,8 +14,7 @@ public class FileSystem {
 
     private static FileSystem fsInstance = null;
 
-    public static FileSystem 
-    getFileSystem() {
+    public static FileSystem getFileSystem() {
         lock.lock();
         try {
             if (fsInstance == null) {
@@ -48,51 +47,25 @@ public class FileSystem {
 
     public static void main(String[] args) throws InterruptedException {
         FileSystem fs = Fixture.createFs();
-
+        FileSystemRunnable fsr = new FileSystemRunnable(fs);
         ArrayList<Thread> threads = new ArrayList<>(15);
 
-        ArrayList<String> threadNames = new ArrayList<>();
-
-        for (int i = 0;i < 15;i ++) {
+        for (int i = 0; i < 15; i++) {
             final int idx = i;
 
-            threads.add(idx, new Thread(() -> {
-                threadNames.add(Thread.currentThread().getName());
-                Directory root = fs.getRootDirs().getFirst();
-                Directory apps = root.getSubDirectories().getFirst();
-
-                File f = new File(apps, Thread.currentThread().getName(), 100);
-                 
-                Link l = new Link(root, "Link:" + Thread.currentThread().getName(), f);
-                
-            }));
+            threads.add(idx, new Thread(fsr));
             threads.get(idx).start();
 
         }
 
-        for (Thread t : threads) {
-            t.interrupt();
+        for (int i = 0; i < 15; i++) {
+            fsr.setDone();
+            threads.get(i).interrupt();
             try {
-                t.join();
+                threads.get(i).join();
             } catch (InterruptedException e) {
                 System.out.println("THREAD INTERRUPTION DETECTED!");
             }
-        }
-
-        LinkedList<File> elements = fs.getRootDirs().getFirst().getSubDirectories().getFirst().getFiles();
-
-        System.out.println("FILES:\n");
-
-        for (File e : elements) {
-            System.out.println(e.getName());
-        }
-
-        LinkedList<Link> elements1 = fs.getRootDirs().getFirst().getSubDirectories().getFirst().getLinks();
-
-        System.out.println("LINKS:\n");
-
-        for (Link e : elements1) {
-            System.out.println(e.getName());
         }
 
     }
