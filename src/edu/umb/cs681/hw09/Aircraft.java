@@ -34,28 +34,19 @@ public class Aircraft {
         Aircraft a1 = new Aircraft(p1);
 
         Thread t1 = new Thread(() -> {
-                Position p2 = a1.getPosition();
-                a1.setPosition(p2.latitude() + 1, p2.longitude(), p2.altitude());
+                a1.setPosition(Math.random() * 2, Math.random() * 2, Math.random() * 2);
         });
 
         Thread t2 = new Thread(() -> {
-                Position p2 = a1.getPosition();
-                a1.setPosition(p2.latitude(), p2.longitude() + 1, p2.altitude());
-        });
-
-        Thread t3 = new Thread(() -> {
-                Position p2 = a1.getPosition();
-                a1.setPosition(p2.latitude(), p2.longitude(), p2.altitude() + 1);
+                System.out.println(a1.getPosition());
         });
 
         t1.start();
         t2.start();
-        t3.start();
 
         try {
             t1.join();
             t2.join();
-            t3.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
