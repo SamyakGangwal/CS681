@@ -8,7 +8,7 @@ public abstract class FSElement {
 	private String name;
 	private LocalDateTime creationTime;
 	private Directory parent;
-	private ReentrantLock lock = new ReentrantLock();
+	protected ReentrantLock lock = new ReentrantLock();
 
 	public FSElement(Directory parent, String name, int size) {
 		lock.lock();

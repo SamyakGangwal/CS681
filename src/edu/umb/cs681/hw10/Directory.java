@@ -1,11 +1,9 @@
 package edu.umb.cs681.hw10;
 
 import java.util.LinkedList;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Directory extends FSElement {
     LinkedList<FSElement> children = new LinkedList<>();
-    private static ReentrantLock lock = new ReentrantLock();
 
     public Directory(Directory parent, String name) {
         super(parent, name, 0);
@@ -115,24 +113,13 @@ public class Directory extends FSElement {
 
     @Override
     public boolean isLink() {
-        lock.lock();
-        try {
-            return false;
-        } finally {
-            lock.unlock();
-        }
+        return false;
 
     }
 
     @Override
     public boolean isDirectory() {
-        lock.lock();
-        try {
-            return true;
-        } finally {
-            lock.unlock();
-        }
-
+        return true;
     }
 
 }

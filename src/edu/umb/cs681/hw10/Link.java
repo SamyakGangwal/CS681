@@ -22,22 +22,12 @@ public class Link extends FSElement {
 
     @Override
     public boolean isLink() {
-        lock.lock();
-        try {
-            return true;
-        } finally {
-            lock.unlock();
-        }
+        return true;
 
     }
 
     @Override
     public boolean isDirectory() {
-        lock.lock();
-        try {
-            return false;
-        } finally {
-            lock.unlock();
-        }
+        return false;
     }
 }
