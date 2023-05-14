@@ -1,4 +1,4 @@
-package edu.umb.cs681.hw13;
+package edu.umb.cs681.hw18;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,7 +21,6 @@ public class RequestHandler implements Runnable {
         int idx = RequestHandler.getRandomNumber();
 
         Path path;
-        int count = 0;
 
         while (true) {
             if (done.get()) {
@@ -36,10 +35,9 @@ public class RequestHandler implements Runnable {
             }
 
             accessCounter.increment(path);
-            count = accessCounter.getCount(path);
 
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -47,16 +45,21 @@ public class RequestHandler implements Runnable {
 
     }
 
-    public static void main(String[] args) {
-        Thread[] threads = new Thread[10];
-        RequestHandler[] runnables = new RequestHandler[10];
+    public static void main(String[] args) throws InterruptedException {
+        Thread[] threads = new Thread[15];
+        RequestHandler[] runnables = new RequestHandler[15];
 
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 15; i++) {
             runnables[i] = new RequestHandler();
 
             threads[i] = new Thread(runnables[i]);
             threads[i].start();
+        }
+
+        Thread.sleep(3000);
+
+        for (int i = 0; i < 15; i++) {
             runnables[i].setDone();
             threads[i].interrupt();
             try {

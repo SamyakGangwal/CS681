@@ -10,3 +10,5 @@ test/bin
 
 test/reports
 .fake
+
+.DS_Store

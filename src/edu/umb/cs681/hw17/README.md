@@ -1,0 +1,5 @@
+While booking flights there can be instances where one has to book 2 flights from A -> B and from B -> C. Now if 2 people where to book same flights but in different order. There can be a possiblity of deadlock if not handled.
+
+That is what is happening in the thread unsafe code. In my example, there are 2 people who are trying to book the flights. John is first booking ABC123 then XYZ789. Then Emily is booking XYZ789 then ABC123. When John is trying to book the second flight, it won't be possible as the lock has not released yet. Hence there will be a lock on the first flight which Emily is trying to book. Hence the deadlock.
+
+Now, in the revised code both the flights will have a lock on them at the same time so that, at least one person is able to book the flight. I have added the logic that whoever has the flight which is alphabetically before then the other one will be able to book the flight first.

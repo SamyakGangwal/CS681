@@ -5,7 +5,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class RunnableCancellablePrimeFactorizer extends RunnablePrimeFactorizer {
 	private ReentrantLock lock = new ReentrantLock();
-	private boolean done = false;
+	protected boolean done = false;
 
 	public RunnableCancellablePrimeFactorizer(long dividend, long from, long to) {
 		super(dividend, from, to);
