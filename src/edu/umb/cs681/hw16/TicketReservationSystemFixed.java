@@ -7,7 +7,12 @@ public class TicketReservationSystemFixed {
     private static ReentrantLock lock = new ReentrantLock();
 
     public int getUnreservedSeats() {
-        return unreservedSeats;
+        lock.lock();
+        try {
+            return unreservedSeats;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public TicketReservationSystemFixed(int unreservedSeats) {
@@ -15,9 +20,8 @@ public class TicketReservationSystemFixed {
     }
 
     public boolean bookSeat() {
-        System.out.println(Thread.currentThread().getName());
         lock.lock();
-        
+
         try {
             if (unreservedSeats > 0) {
                 // Simulating some processing time

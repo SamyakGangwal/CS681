@@ -1,10 +1,7 @@
 package edu.umb.cs681.hw17.safe;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 public class PassengerSafe {
     private String name;
-    private ReentrantLock lock = new ReentrantLock();
 
     public PassengerSafe(String name) {
         this.name = name;

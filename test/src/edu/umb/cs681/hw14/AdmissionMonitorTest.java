@@ -40,7 +40,7 @@ public class AdmissionMonitorTest {
             th[i].start();
         }
 
-        Thread.sleep(500);
+        Thread.sleep(10);
         entranceHandler[0].setDone();
         entranceHandler[1].setDone();
 

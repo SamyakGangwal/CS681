@@ -17,6 +17,7 @@ public class EntranceHandler implements Runnable {
     public void run() {
         while (true) {
             if (this.done.get()) {
+                System.out.println("ENTRANCE EXITING!!!!!");
                 break;
             }
             monitor.enter();

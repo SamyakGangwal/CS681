@@ -17,6 +17,7 @@ public class ExitHandler implements Runnable {
     public void run() {
         while (true) {
             if (this.done.get()) {
+                System.out.println("EXITING!!!!!!!!!!!!!!!");
                 break;
             }
             monitor.exit();

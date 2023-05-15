@@ -10,7 +10,7 @@ public class LineChartObserver implements Observer<StockEvent> {
     @Override
     public void update(Observable<StockEvent> sender, StockEvent event) {
         StockEvent t =
-                new StockEvent((((StockEvent) event).getTicker()), ((StockEvent) event).getQuote());
+                new StockEvent(event.getTicker(), event.getQuote());
 
         this.s = t;
 
@@ -20,6 +20,5 @@ public class LineChartObserver implements Observer<StockEvent> {
 
 
     }
-
 
 }
