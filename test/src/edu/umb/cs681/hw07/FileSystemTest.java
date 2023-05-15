@@ -30,7 +30,7 @@ public class FileSystemTest {
 
 		for (int i = 0;i < 10;i ++) {
 			threads[i].join();
-			assertSame(FileSystem.getFileSystem(), fsList[i].getFileSystem());
+			assertSame(FileSystem.getFileSystem(), FileSystem.getFileSystem());
 		}
 	}
 

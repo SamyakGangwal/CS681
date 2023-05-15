@@ -24,8 +24,9 @@ public class DeadlockTest {
         thread1.start();
         thread2.start();
 
+        // I have added this interrupt to purposely end the program
         thread1.interrupt();
-            thread2.interrupt();
+        thread2.interrupt();
 
         assertTrue(thread1.isInterrupted());
     }

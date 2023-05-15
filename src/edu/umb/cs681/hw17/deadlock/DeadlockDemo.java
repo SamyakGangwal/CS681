@@ -1,7 +1,7 @@
 package edu.umb.cs681.hw17.deadlock;
 
 public class DeadlockDemo {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Flight flight1 = new Flight("ABC123");
         Flight flight2 = new Flight("XYZ789");
 
@@ -13,6 +13,8 @@ public class DeadlockDemo {
 
         thread1.start();
         thread2.start();
+
+        System.out.println("DEADLOCK! EXITING!");
     }
 }
 
